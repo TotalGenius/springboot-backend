@@ -18,28 +18,28 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     public Long getId() {
         return id;
     }
 
 
     @Basic
-    @Column(name = "title", nullable = false, length = 45)
+    @Column(name = "title")
     public String getTitle() {
         return title;
     }
 
 
     @Basic
-    @Column(name = "completed_count", nullable = true)
+    @Column(name = "completed_count")
     public Long getCompletedCount() {
         return completedCount;
     }
 
 
     @Basic
-    @Column(name = "uncompleted_count", nullable = true)
+    @Column(name = "uncompleted_count")
     public Long getUncompletedCount() {
         return uncompletedCount;
     }

@@ -27,21 +27,21 @@ public class Task {
     }
 
     @Basic
-    @Column(name = "title", nullable = false, length = 100)
+    @Column(name = "title")
     public String getTitle() {
         return title;
     }
 
 
     @Basic
-    @Column(name = "completed", nullable = true)
+    @Column(name = "completed")
     public Integer getCompleted() {
         return completed;
     }
 
 
     @Basic
-    @Column(name = "date", nullable = true)
+    @Column(name = "date")
     public Date getDate() {
         return date;
     }

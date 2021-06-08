@@ -17,21 +17,21 @@ public class Priority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     public Long getId() {
         return id;
     }
 
 
     @Basic
-    @Column(name = "title", nullable = false, length = 45)
+    @Column(name = "title")
     public String getTitle() {
         return title;
     }
 
 
     @Basic
-    @Column(name = "color", nullable = false, length = 45)
+    @Column(name = "color")
     public String getColor() {
         return color;
     }
