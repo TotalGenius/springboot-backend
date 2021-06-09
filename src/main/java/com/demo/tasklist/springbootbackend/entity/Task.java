@@ -54,9 +54,6 @@ public class Task {
         return priority;
     }
 
-    public void setPriority(Priority priorityByPriorityId) {
-        this.priority = priorityByPriorityId;
-    }
 
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
