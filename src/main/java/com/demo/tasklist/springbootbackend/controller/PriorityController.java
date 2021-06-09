@@ -48,5 +48,17 @@ public class PriorityController {
         return new ResponseEntity("New Priority was added", HttpStatus.OK);
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<Priority> update(@RequestBody Priority priority) {
 
+        //Checking id(id cannot be null)
+        if (priority.getId() == null) {
+            return new ResponseEntity("id cannot be empty", HttpStatus.NOT_ACCEPTABLE);
+        }
+
+
+        priorityRepository.save(priority);
+
+        return new ResponseEntity("Priority with id " + priority.getId() + " was updated", HttpStatus.OK);
+    }
 }
