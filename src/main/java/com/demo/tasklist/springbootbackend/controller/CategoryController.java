@@ -4,6 +4,7 @@ import com.demo.tasklist.springbootbackend.entity.Category;
 import com.demo.tasklist.springbootbackend.entity.Priority;
 import com.demo.tasklist.springbootbackend.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,6 +69,16 @@ public class CategoryController {
         }
 //if category with such id exists we will return this category to client
         return ResponseEntity.ok(category);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Category> deleteById(@PathVariable Long id) {
+        try {
+            categoryRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            return new ResponseEntity("Couldn't delete category with such id. Category with such id doesn't exist", HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity("Category with such id was deleted", HttpStatus.OK);
     }
 
 
