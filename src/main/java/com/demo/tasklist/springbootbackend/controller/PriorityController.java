@@ -4,6 +4,7 @@ import com.demo.tasklist.springbootbackend.entity.Priority;
 import com.demo.tasklist.springbootbackend.repository.PriorityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -75,5 +76,15 @@ public class PriorityController {
             return new ResponseEntity("Priority with such id doesn't exist", HttpStatus.NOT_ACCEPTABLE);
         }
         return ResponseEntity.ok(priority);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Priority> deleteById(@PathVariable Long id) {
+        try {
+            priorityRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            return new ResponseEntity("Couldn't delete priority with such id. Priority with such id doesn't exist", HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity("Priority with such id was deleted", HttpStatus.OK);
     }
 }
