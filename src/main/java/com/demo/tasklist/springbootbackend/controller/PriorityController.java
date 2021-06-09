@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/priority")
@@ -56,9 +57,23 @@ public class PriorityController {
             return new ResponseEntity("id cannot be empty", HttpStatus.NOT_ACCEPTABLE);
         }
 
-
         priorityRepository.save(priority);
 
         return new ResponseEntity("Priority with id " + priority.getId() + " was updated", HttpStatus.OK);
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<Priority> findById(@PathVariable Long id) {
+        Priority priority = null;
+        /*
+        If priority with such doesn't exist exception will be thrown,
+        and we will send special message to client
+         */
+        try {
+            priority = priorityRepository.findById(id).get();
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity("Priority with such id doesn't exist", HttpStatus.NOT_ACCEPTABLE);
+        }
+        return ResponseEntity.ok(priority);
     }
 }

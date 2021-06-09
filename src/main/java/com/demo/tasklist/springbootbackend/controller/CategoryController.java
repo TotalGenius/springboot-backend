@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/category")
@@ -49,6 +50,24 @@ public class CategoryController {
         categoryRepository.save(category);
 
         return new ResponseEntity("category with id " + category.getId() + " was updated", HttpStatus.OK);
+    }
+
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<Category> findById(@PathVariable Long id) {
+
+        Category category = null;
+        /*
+        If category with such doesn't exist exception will be thrown,
+        and we will send special message to client
+         */
+        try {
+            category = categoryRepository.findById(id).get();
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity("There is no category with such id ", HttpStatus.NOT_ACCEPTABLE);
+        }
+//if category with such id exists we will return this category to client
+        return ResponseEntity.ok(category);
     }
 
 
