@@ -22,9 +22,9 @@ public class PriorityController {
     @Value("${priorityDefaultColor}")
     private String defaultColor;
 
-    @GetMapping("/test")
-    public List<Priority> test() {
-        List<Priority> list = priorityRepository.findAll();
+    @GetMapping("/all")
+    public List<Priority> findAll() {
+        List<Priority> list = priorityRepository.findAllByOrderByTitleAsc();
         return list;
     }
 
@@ -66,10 +66,12 @@ public class PriorityController {
     @GetMapping("/id/{id}")
     public ResponseEntity<Priority> findById(@PathVariable Long id) {
         Priority priority = null;
+
         /*
         If priority with such doesn't exist exception will be thrown,
         and we will send special message to client
          */
+
         try {
             priority = priorityRepository.findById(id).get();
         } catch (NoSuchElementException e) {

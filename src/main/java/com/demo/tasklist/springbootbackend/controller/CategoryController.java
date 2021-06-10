@@ -19,9 +19,9 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @GetMapping("/test")
+    @GetMapping("/all")
     private List<Category> test() {
-        List<Category> list = categoryRepository.findAll();
+        List<Category> list = categoryRepository.findAllByOrderByIdAsc();
         return list;
     }
 
@@ -67,7 +67,7 @@ public class CategoryController {
         } catch (NoSuchElementException e) {
             return new ResponseEntity("There is no category with such id ", HttpStatus.NOT_ACCEPTABLE);
         }
-//if category with such id exists we will return this category to client
+        //if category with such id exists we will return this category to client
         return ResponseEntity.ok(category);
     }
 
