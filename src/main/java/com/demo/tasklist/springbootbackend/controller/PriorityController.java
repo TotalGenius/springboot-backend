@@ -2,6 +2,7 @@ package com.demo.tasklist.springbootbackend.controller;
 
 import com.demo.tasklist.springbootbackend.entity.Priority;
 import com.demo.tasklist.springbootbackend.repository.PriorityRepository;
+import com.demo.tasklist.springbootbackend.search.PrioritySearchValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -88,5 +89,11 @@ public class PriorityController {
             return new ResponseEntity("Couldn't delete priority with such id. Priority with such id doesn't exist", HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity("Priority with such id was deleted", HttpStatus.OK);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Priority>> findByTitle(@RequestBody PrioritySearchValue prioritySearchValue) {
+        List<Priority> list = priorityRepository.findAllByTitle(prioritySearchValue.getTitle());
+        return ResponseEntity.ok(list);
     }
 }

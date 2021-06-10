@@ -3,6 +3,7 @@ package com.demo.tasklist.springbootbackend.controller;
 import com.demo.tasklist.springbootbackend.entity.Category;
 import com.demo.tasklist.springbootbackend.entity.Priority;
 import com.demo.tasklist.springbootbackend.repository.CategoryRepository;
+import com.demo.tasklist.springbootbackend.search.CategorySearchValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -81,5 +82,10 @@ public class CategoryController {
         return new ResponseEntity("Category with such id was deleted", HttpStatus.OK);
     }
 
-
+    //search by certain value(s)
+    @PostMapping("/search")
+    public ResponseEntity<List<Category>> findByTitle(@RequestBody CategorySearchValues categorySearchValues) {
+        List<Category> list = categoryRepository.findAllByTitle(categorySearchValues.getTitle());
+        return ResponseEntity.ok(list);
+    }
 }
