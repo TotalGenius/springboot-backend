@@ -21,9 +21,9 @@ public class CategoryController {
     private CategoryRepository categoryRepository;
 
     @GetMapping("/all")
-    private List<Category> test() {
+    public ResponseEntity<List<Category>> findAll() {
         List<Category> list = categoryRepository.findAllByOrderByIdAsc();
-        return list;
+        return ResponseEntity.ok(list);
     }
 
     @PostMapping("/add")
@@ -42,7 +42,6 @@ public class CategoryController {
     @PutMapping("/update")
     public ResponseEntity<Category> update(@RequestBody Category category) {
 
-        Category tempCategory = categoryRepository.getById(category.getId());
 
         //Checking id(id cannot be null)
         if (category.getId() == null) {
