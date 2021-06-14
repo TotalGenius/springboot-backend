@@ -2,6 +2,7 @@ package com.demo.tasklist.springbootbackend.controller;
 
 import com.demo.tasklist.springbootbackend.entity.Task;
 import com.demo.tasklist.springbootbackend.repository.TaskRepository;
+import com.demo.tasklist.springbootbackend.search.TaskSearchValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -69,6 +70,20 @@ public class TaskController {
             return new ResponseEntity("Couldn't delete Task with such id. Task with id=" + id + " doesn't exist", HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity("Task with id=" + id + " was deleted", HttpStatus.OK);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Task>> findByParams(@RequestBody TaskSearchValues taskSearchValues) {
+
+        //Get rid of NullPointerException
+        String title = taskSearchValues.getTitle() != null ? taskSearchValues.getTitle() : null;
+        Integer completed = taskSearchValues.getCompleted() != null ? taskSearchValues.getCompleted() : null;
+        Long priorityId = taskSearchValues.getPriorityId() != null ? taskSearchValues.getPriorityId() : null;
+        Long categoryId = taskSearchValues.getCategoryId() != null ? taskSearchValues.getCategoryId() : null;
+
+        List<Task> list = taskRepository.findByParams(title, completed, priorityId, categoryId);
+
+        return ResponseEntity.ok(list);
     }
 
 

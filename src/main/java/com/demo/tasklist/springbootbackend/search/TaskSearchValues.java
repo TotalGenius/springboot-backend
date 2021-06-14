@@ -10,9 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TaskSearchValues {
+    private String title;
+    private Integer completed;
     private Long priorityId;
     private Long categoryId;
-    private int completed;
-    private String text;
 
 }
