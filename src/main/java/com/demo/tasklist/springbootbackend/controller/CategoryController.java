@@ -1,9 +1,8 @@
 package com.demo.tasklist.springbootbackend.controller;
 
 import com.demo.tasklist.springbootbackend.entity.Category;
-import com.demo.tasklist.springbootbackend.entity.Priority;
-import com.demo.tasklist.springbootbackend.repository.CategoryRepository;
 import com.demo.tasklist.springbootbackend.search.CategorySearchValues;
+import com.demo.tasklist.springbootbackend.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -18,11 +17,11 @@ import java.util.NoSuchElementException;
 public class CategoryController {
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private CategoryService categoryService;
 
     @GetMapping("/all")
     public ResponseEntity<List<Category>> findAll() {
-        List<Category> list = categoryRepository.findAllByOrderByIdAsc();
+        List<Category> list = categoryService.findAllByOrderedByAsc();
         return ResponseEntity.ok(list);
     }
 
@@ -34,7 +33,7 @@ public class CategoryController {
         if (category.getTitle() == null || category.getTitle().trim().length() == 0) {
             return new ResponseEntity("title cannot be empty or consisted of spaces", HttpStatus.NOT_ACCEPTABLE);
         }
-        categoryRepository.save(category);
+        categoryService.add(category);
 
         return new ResponseEntity("New category was added", HttpStatus.OK);
     }
@@ -48,7 +47,7 @@ public class CategoryController {
             return new ResponseEntity("id cannot be empty", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        categoryRepository.save(category);
+        categoryService.update(category);
 
         return new ResponseEntity("category with id " + category.getId() + " was updated", HttpStatus.OK);
     }
@@ -63,7 +62,7 @@ public class CategoryController {
         and we will send special message to client
          */
         try {
-            category = categoryRepository.findById(id).get();
+            category = categoryService.findById(id);
         } catch (NoSuchElementException e) {
             return new ResponseEntity("There is no category with such id ", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -74,7 +73,7 @@ public class CategoryController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Category> deleteById(@PathVariable Long id) {
         try {
-            categoryRepository.deleteById(id);
+            categoryService.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity("Couldn't delete category with such id. Category with such id doesn't exist", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -84,7 +83,7 @@ public class CategoryController {
     //search by certain value(s)
     @PostMapping("/search")
     public ResponseEntity<List<Category>> findByTitle(@RequestBody CategorySearchValues categorySearchValues) {
-        List<Category> list = categoryRepository.findAllByTitle(categorySearchValues.getTitle());
+        List<Category> list = categoryService.findAllByTitle(categorySearchValues.getTitle());
         return ResponseEntity.ok(list);
     }
 }

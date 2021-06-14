@@ -3,6 +3,7 @@ package com.demo.tasklist.springbootbackend.controller;
 import com.demo.tasklist.springbootbackend.entity.Priority;
 import com.demo.tasklist.springbootbackend.repository.PriorityRepository;
 import com.demo.tasklist.springbootbackend.search.PrioritySearchValue;
+import com.demo.tasklist.springbootbackend.service.PriorityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,14 +19,14 @@ import java.util.NoSuchElementException;
 public class PriorityController {
 
     @Autowired
-    private PriorityRepository priorityRepository;
+    private PriorityService priorityService;
 
     @Value("${priorityDefaultColor}")
     private String defaultColor;
 
     @GetMapping("/all")
     public List<Priority> findAll() {
-        List<Priority> list = priorityRepository.findAllByOrderByTitleAsc();
+        List<Priority> list = priorityService.findAll();
         return list;
     }
 
@@ -47,7 +48,7 @@ public class PriorityController {
             priority.setColor(defaultColor);
         }
 
-        priorityRepository.save(priority);
+        priorityService.add(priority);
         return new ResponseEntity("New Priority was added", HttpStatus.OK);
     }
 
@@ -59,7 +60,7 @@ public class PriorityController {
             return new ResponseEntity("id cannot be empty", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        priorityRepository.save(priority);
+        priorityService.update(priority);
 
         return new ResponseEntity("Priority with id " + priority.getId() + " was updated", HttpStatus.OK);
     }
@@ -74,7 +75,7 @@ public class PriorityController {
          */
 
         try {
-            priority = priorityRepository.findById(id).get();
+            priority = priorityService.findById(id);
         } catch (NoSuchElementException e) {
             return new ResponseEntity("Priority with such id doesn't exist", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -84,7 +85,7 @@ public class PriorityController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Priority> deleteById(@PathVariable Long id) {
         try {
-            priorityRepository.deleteById(id);
+            priorityService.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity("Couldn't delete priority with such id. Priority with such id doesn't exist", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -93,7 +94,7 @@ public class PriorityController {
 
     @PostMapping("/search")
     public ResponseEntity<List<Priority>> findByTitle(@RequestBody PrioritySearchValue prioritySearchValue) {
-        List<Priority> list = priorityRepository.findAllByTitle(prioritySearchValue.getTitle());
+        List<Priority> list = priorityService.findAllByTitle(prioritySearchValue.getTitle());
         return ResponseEntity.ok(list);
     }
 }

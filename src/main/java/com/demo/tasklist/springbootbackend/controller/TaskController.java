@@ -1,8 +1,8 @@
 package com.demo.tasklist.springbootbackend.controller;
 
 import com.demo.tasklist.springbootbackend.entity.Task;
-import com.demo.tasklist.springbootbackend.repository.TaskRepository;
 import com.demo.tasklist.springbootbackend.search.TaskSearchValues;
+import com.demo.tasklist.springbootbackend.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -19,11 +19,11 @@ import java.util.NoSuchElementException;
 @RequestMapping("/task")
 public class TaskController {
     @Autowired
-    private TaskRepository taskRepository;
+    private TaskService taskService;
 
     @GetMapping("/all")
     public ResponseEntity<List<Task>> findAll() {
-        List<Task> taskList = taskRepository.findAllByOrderByTitleAsc();
+        List<Task> taskList = taskService.findAll();
         return ResponseEntity.ok(taskList);
     }
 
@@ -35,7 +35,7 @@ public class TaskController {
         if (task.getTitle() == null || task.getTitle().trim().length() == 0) {
             return new ResponseEntity("Title cannot be empty", HttpStatus.NOT_ACCEPTABLE);
         }
-        taskRepository.save(task);
+        taskService.add(task);
         return new ResponseEntity("New task was added", HttpStatus.OK);
     }
 
@@ -46,7 +46,7 @@ public class TaskController {
         if (task.getId() == null) {
             return new ResponseEntity("id cannot be null", HttpStatus.NOT_ACCEPTABLE);
         }
-        taskRepository.save(task);
+        taskService.update(task);
         return new ResponseEntity("Task with id=" + task.getId() + " was updated", HttpStatus.OK);
 
     }
@@ -57,7 +57,7 @@ public class TaskController {
 
         Task task = null;
         try {
-            task = taskRepository.findById(id).get();
+            task = taskService.findById(id);
         } catch (NoSuchElementException e) {
 
             return new ResponseEntity("There is no element with such id=" + id, HttpStatus.NOT_ACCEPTABLE);
@@ -68,7 +68,7 @@ public class TaskController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Task> delete(@PathVariable Long id) {
         try {
-            taskRepository.deleteById(id);
+            taskService.delete(id);
         } catch (EmptyResultDataAccessException e) {
             return new ResponseEntity("Couldn't delete Task with such id. Task with id=" + id + " doesn't exist", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -98,7 +98,7 @@ public class TaskController {
         //Paging object
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
 
-        Page result = taskRepository.findByParams(title, completed, priorityId, categoryId, pageRequest);
+        Page result = taskService.findByParams(title, completed, priorityId, categoryId, pageRequest);
 
         return ResponseEntity.ok(result);
     }

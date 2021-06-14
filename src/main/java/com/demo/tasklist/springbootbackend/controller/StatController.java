@@ -3,6 +3,7 @@ package com.demo.tasklist.springbootbackend.controller;
 
 import com.demo.tasklist.springbootbackend.entity.Stat;
 import com.demo.tasklist.springbootbackend.repository.StatRepository;
+import com.demo.tasklist.springbootbackend.service.StatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +18,12 @@ public class StatController {
     private Long defaultId;
 
     @Autowired
-    private StatRepository statRepository;
+    private StatService statService;
 
     @GetMapping("/stat")
     public ResponseEntity<Stat> findById() {
 
-        Stat stat = statRepository.findById(defaultId).get();
+        Stat stat = statService.findById(defaultId);
         return ResponseEntity.ok(stat);
     }
 }
