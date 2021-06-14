@@ -5,6 +5,9 @@ import com.demo.tasklist.springbootbackend.repository.TaskRepository;
 import com.demo.tasklist.springbootbackend.search.TaskSearchValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,19 +76,32 @@ public class TaskController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<Task>> findByParams(@RequestBody TaskSearchValues taskSearchValues) {
+    public ResponseEntity<Page<Task>> findByParams(@RequestBody TaskSearchValues taskSearchValues) {
 
-        //Get rid of NullPointerException
+        //Data for search
         String title = taskSearchValues.getTitle() != null ? taskSearchValues.getTitle() : null;
         Integer completed = taskSearchValues.getCompleted() != null ? taskSearchValues.getCompleted() : null;
         Long priorityId = taskSearchValues.getPriorityId() != null ? taskSearchValues.getPriorityId() : null;
         Long categoryId = taskSearchValues.getCategoryId() != null ? taskSearchValues.getCategoryId() : null;
 
-        List<Task> list = taskRepository.findByParams(title, completed, priorityId, categoryId);
+        //Data for paging
+        Integer pageSize = taskSearchValues.getPageSize() != null ? taskSearchValues.getPageSize() : 0;
+        Integer pageNumber = taskSearchValues.getPageNumber() != null ? taskSearchValues.getPageNumber() : 0;
 
-        return ResponseEntity.ok(list);
+        //Data for sorting
+        String sortColumn = taskSearchValues.getSortColumn() != null ? taskSearchValues.getSortColumn() : null;
+        Sort.Direction direction = taskSearchValues.getSortDirection().trim().equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        //Sorting object
+        Sort sort = Sort.by(direction, sortColumn);
+
+        //Paging object
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page result = taskRepository.findByParams(title, completed, priorityId, categoryId, pageRequest);
+
+        return ResponseEntity.ok(result);
     }
-
 
 
 }
